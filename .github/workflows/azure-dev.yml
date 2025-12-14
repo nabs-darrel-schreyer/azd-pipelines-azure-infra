@@ -67,28 +67,61 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # 9. Retrieve dynamic resource group name without jq
-      - name: Get resource group from azd
-        run: |
-          RG=$(azd env get-values --output tsv | grep AZURE_RESOURCE_GROUP | awk '{print $2}')
-          if [ -z "$RG" ] || [ "$RG" == "null" ]; then
-            echo "ERROR: Could not determine AZURE_RESOURCE_GROUP from azd"
-            exit 1
-          fi
-          echo "AZURE_RESOURCE_GROUP=$RG" >> $GITHUB_ENV
-
-
-      # 10. List Container App jobs for debugging
+      # 9. List Container App jobs for debugging
       - name: List Container App Jobs
-        run: az containerapp job list --resource-group "$AZURE_RESOURCE_GROUP" --query "[].name"
+        run: az containerapp job list --resource-group rg-${{ vars.AZURE_ENV_NAME }} --query "[].name"
+
+      # 10. Trigger SQL migrations job and wait for completion
+      - name: Run SQL Migrations Job
+        run: |
+          JOB_NAME=sqlmigrations
+          RG_NAME=rg-${{ vars.AZURE_ENV_NAME }}
+          
+          echo "Starting migration job: $JOB_NAME"
+          az containerapp job start --name "$JOB_NAME" --resource-group "$RG_NAME"
+          
+          echo "Waiting for migration job to complete..."
+          MAX_ATTEMPTS=60
+          ATTEMPT=0
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            ATTEMPT=$((ATTEMPT + 1))
+            
+            # Get the latest execution status
+            STATUS=$(az containerapp job execution list \
+              --name "$JOB_NAME" \
+              --resource-group "$RG_NAME" \
+              --query "[0].properties.status" -o tsv 2>/dev/null || echo "Unknown")
+            
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - Status: $STATUS"
+            
+            if [ "$STATUS" = "Succeeded" ]; then
+              echo "? Migration job completed successfully!"
+              exit 0
+            elif [ "$STATUS" = "Failed" ]; then
+              echo "? Migration job failed!"
+              # Get execution logs for debugging
+              az containerapp job execution list \
+                --name "$JOB_NAME" \
+                --resource-group "$RG_NAME" \
+                --query "[0]" -o json
+              exit 1
+            fi
+            
+            sleep 10
+          done
+          
+          echo "?? Timeout waiting for migration job to complete"
+          exit 1
 
       # 11. Delete Container Apps Job safely
       - name: Delete Container Apps Job if it exists
         run: |
           JOB_NAME=sqlmigrations
-          if az containerapp job show --name "$JOB_NAME" --resource-group "$AZURE_RESOURCE_GROUP" > /dev/null 2>&1; then
-            echo "Deleting job $JOB_NAME..."
-            az containerapp job delete --name "$JOB_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --yes
+          if az containerapp job show --name "$JOB_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} > /dev/null 2>&1; then
+            echo "Deleting job $JOB_NAME to avoid ongoing costs..."
+            az containerapp job delete --name "$JOB_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} --yes
+            echo "? Job deleted successfully"
           else
             echo "Job $JOB_NAME not found, skipping delete."
           fi
