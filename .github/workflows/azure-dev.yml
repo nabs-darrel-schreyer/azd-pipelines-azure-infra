@@ -67,18 +67,18 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # 9. List Container App jobs for debugging
-      - name: List Container App Jobs
-        run: az containerapp job list --resource-group rg-${{ vars.AZURE_ENV_NAME }} --query "[].name"
+      # 9. List Container App for debugging
+      - name: List Container Apps
+        run: az containerapp list --resource-group rg-${{ vars.AZURE_ENV_NAME }} --query "[].name"
   
-      # 10. Delete Container Apps Job safely
-      - name: Delete Container Apps Job if it exists
+      # 10. Delete Container Apps safely
+      - name: Delete Container Apps if it exists
         run: |
-          JOB_NAME=sqlmigrations
-          if az containerapp job show --name "$JOB_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} > /dev/null 2>&1; then
-            echo "Deleting job $JOB_NAME to avoid ongoing costs..."
-            az containerapp job delete --name "$JOB_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} --yes
-            echo "✅ Job deleted successfully"
+          APP_NAME=sqlmigrations
+          if az containerapp show --name "$APP_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} > /dev/null 2>&1; then
+            echo "Deleting $APP_NAME to avoid ongoing costs..."
+            az containerapp delete --name "$APP_NAME" --resource-group rg-${{ vars.AZURE_ENV_NAME }} --yes
+            echo "✅ App deleted successfully"
           else
-            echo "Job $JOB_NAME not found, skipping delete."
+            echo "App $APP_NAME not found, skipping delete."
           fi
