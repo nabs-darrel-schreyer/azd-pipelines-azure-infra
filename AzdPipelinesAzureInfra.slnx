@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/AzdPipelinesAzureInfra.ApiService/AzdPipelinesAzureInfra.ApiService.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.AppHost/AzdPipelinesAzureInfra.AppHost.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.ServiceDefaults/AzdPipelinesAzureInfra.ServiceDefaults.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.Web/AzdPipelinesAzureInfra.Web.csproj" />
+</Solution>
