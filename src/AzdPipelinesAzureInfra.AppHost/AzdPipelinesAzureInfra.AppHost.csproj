@@ -13,4 +13,8 @@
     <ProjectReference Include="..\AzdPipelinesAzureInfra.Web\AzdPipelinesAzureInfra.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="13.0.2" />
+  </ItemGroup>
+
 </Project>
