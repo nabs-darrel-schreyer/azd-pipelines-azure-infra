@@ -59,7 +59,8 @@ public class Worker(
                 Id = id,
                 Username = $"user{id}",
                 FirstName = $"FirstName{id}",
-                LastName = $"LastName{id}"
+                LastName = $"LastName{id}",
+                YearOfBirth = 1990 + i
             });
         }
 

@@ -42,7 +42,7 @@ app.MapGet("/weatherforecast", () =>
 app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
 {
     var people = await dbContext.People
-        .Select(x => new Person(x.Id, x.Username, x.FirstName, x.LastName))
+        .Select(x => new Person(x.Id, x.Username, x.FirstName, x.LastName, x.YearOfBirth))
         .ToListAsync();
     return people;
 })
