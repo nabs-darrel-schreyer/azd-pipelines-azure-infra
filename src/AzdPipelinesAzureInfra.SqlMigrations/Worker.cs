@@ -1,4 +1,4 @@
-﻿using AzdPipelinesAzureInfra.ApiService.Persistence;
+﻿using AzdPipelinesAzureInfra.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;

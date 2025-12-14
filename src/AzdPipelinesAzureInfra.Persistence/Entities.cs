@@ -1,4 +1,4 @@
-﻿namespace AzdPipelinesAzureInfra.ApiService.Persistence;
+﻿namespace AzdPipelinesAzureInfra.Persistence;
 
 public sealed class PersonEntity
 {

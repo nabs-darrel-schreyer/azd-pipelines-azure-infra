@@ -10,7 +10,7 @@ var sqlServer = builder
     .RunAsContainer();
 
 var testDb = sqlServer
-    .AddDatabase("test-db");
+    .AddDatabase("test-db", "TestSqlDb");
 
 var sqlMigration = builder
     .AddProject<Projects.AzdPipelinesAzureInfra_SqlMigrations>("sqlmigrations")

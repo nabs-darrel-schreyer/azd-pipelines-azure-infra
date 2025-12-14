@@ -1,4 +1,4 @@
-﻿using AzdPipelinesAzureInfra.ApiService.Persistence;
+﻿using AzdPipelinesAzureInfra.Persistence;
 using AzdPipelinesAzureInfra.SqlMigrations;
 
 var builder = Host.CreateApplicationBuilder(args);

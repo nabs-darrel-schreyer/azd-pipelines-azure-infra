@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AzdPipelinesAzureInfra.ApiService.Persistence;
+namespace AzdPipelinesAzureInfra.Persistence;
 
 public sealed class TestDbContext(
     DbContextOptions<TestDbContext> options)

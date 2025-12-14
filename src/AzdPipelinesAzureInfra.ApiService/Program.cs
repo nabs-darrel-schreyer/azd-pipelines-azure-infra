@@ -1,4 +1,4 @@
-using AzdPipelinesAzureInfra.ApiService.Persistence;
+using AzdPipelinesAzureInfra.Persistence;
 using AzdPipelinesAzureInfra.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
