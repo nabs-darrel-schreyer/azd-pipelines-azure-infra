@@ -1,21 +1,18 @@
-# Run when commits are pushed to main
+name: Build, Deploy, Run, and Cleanup Container App Job
+
+# Trigger manually or on pushes to main
 on:
   workflow_dispatch:
   push:
-    # Run when commits are pushed to mainline branch (main or master)
-    # Set this to the mainline branch you are using
     branches:
       - main
 
-# Set up permissions for deploying with secretless Azure federated credentials
-# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
 permissions:
   id-token: write
   contents: read
 
-
 jobs:
-  build:
+  build-deploy-cleanup:
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -24,22 +21,29 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
     steps:
+      # 1. Checkout repo
       - name: Checkout
         uses: actions/checkout@v4
+
+      # 2. Install azd
       - name: Install azd
         uses: Azure/setup-azd@v2
+
+      # 3. Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: | 
+          dotnet-version: |
             8.x
             9.x
             10.x
 
+      # 4. Install EF Core tools
       - name: Install Entity Framework Core tools
         run: dotnet tool install --global dotnet-ef
 
-      - name: Log in with Azure (Federated Credentials)
+      # 5. Login azd with federated credentials
+      - name: Login azd
         run: |
           azd auth login `
             --client-id "$Env:AZURE_CLIENT_ID" `
@@ -47,23 +51,40 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-
-      - name: Provision Infrastructure
+      # 6. Provision infrastructure
+      - name: Provision infrastructure
         run: azd provision --no-prompt
 
-      - name: Deploy Application
+      # 7. Deploy application
+      - name: Deploy application
         run: azd deploy --no-prompt
-        
-      - name: Login to Azure
+
+      # 8. Login Azure CLI (required for delete)
+      - name: Login Azure CLI
         uses: azure/login@v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Delete Container Apps Job
+      # 9. Retrieve dynamic resource group name
+      - name: Get resource group from azd
+        id: azd-env
         run: |
-          az containerapp job delete \
-            --name sqlmigrations \
-            --resource-group rg-testing-azd-pipelines \
-            --yes
+          RG=$(azd env get-values --output json | jq -r .AZURE_RESOURCE_GROUP)
+          echo "AZURE_RESOURCE_GROUP=$RG" >> $GITHUB_ENV
+
+      # 10. List Container App jobs for debugging
+      - name: List Container App Jobs
+        run: az containerapp job list --resource-group "$AZURE_RESOURCE_GROUP" --query "[].name"
+
+      # 11. Delete Container Apps Job safely
+      - name: Delete Container Apps Job if it exists
+        run: |
+          JOB_NAME=sqlmigrations
+          if az containerapp job show --name "$JOB_NAME" --resource-group "$AZURE_RESOURCE_GROUP" > /dev/null 2>&1; then
+            echo "Deleting job $JOB_NAME..."
+            az containerapp job delete --name "$JOB_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --yes
+          else
+            echo "Job $JOB_NAME not found, skipping delete."
+          fi
