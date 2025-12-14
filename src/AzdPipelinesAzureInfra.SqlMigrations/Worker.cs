@@ -61,6 +61,11 @@ public class Worker(
                 Username = "testuser2",
                 FirstName = "Test2",
                 LastName = "User2"
+            },
+            new() {
+                Username = "testuser3",
+                FirstName = "Test3",
+                LastName = "User3"
             }
         ];
         
