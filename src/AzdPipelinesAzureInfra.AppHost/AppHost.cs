@@ -20,6 +20,7 @@ var apiService = builder
     .AddProject<Projects.AzdPipelinesAzureInfra_ApiService>("apiservice")
     .WithHttpHealthCheck("/health")
     .WithReference(testDb).WaitFor(testDb)
+    .WithReference(sqlMigration)
     .WaitForCompletion(sqlMigration);
 
 builder
