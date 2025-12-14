@@ -51,18 +51,37 @@ public class Worker(
     private static async Task SeedDataAsync(
         TestDbContext dbContext, CancellationToken cancellationToken)
     {
+        var rnd = new Random();
+        
+        // I expect that these items are added only once
+        Guid[] ids = [
+            new Guid("549b8034-909d-4f25-abed-48a9fdb24276"),
+            new Guid("7e3f0f92-c31f-4735-b733-7b82e8c7f187"),
+            new Guid("653a2397-f046-4d1c-9774-815fc7ec29f9")
+            ];
         var people = new List<PersonEntity>();
-        for (int i = 0; i < 3; i++)
+        foreach (var id in ids)
         {
-            var id = Guid.NewGuid();
-            people.Add(new PersonEntity {
+            people.Add(new PersonEntity
+            {
                 Id = id,
                 Username = $"user{id}",
                 FirstName = $"FirstName{id}",
                 LastName = $"LastName{id}",
-                YearOfBirth = 1990 + i
+                YearOfBirth = rnd.Next(1885, 2025)
             });
         }
+
+        // I expect this one is added every after a deployment.
+        var id = Guid.NewGuid();
+        people.Add(new PersonEntity
+        {
+            Id = id,
+            Username = $"user{id}",
+            FirstName = $"FirstName{id}",
+            LastName = $"LastName{id}",
+            YearOfBirth = rnd.Next(1885, 2025)
+        });
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
