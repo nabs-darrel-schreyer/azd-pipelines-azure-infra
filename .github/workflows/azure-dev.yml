@@ -54,3 +54,9 @@ jobs:
       - name: Deploy Application
         run: azd deploy --no-prompt
         
+      - name: Delete Container Apps Job
+        run: |
+          az containerapp job delete \
+            --name sqlmigrations \
+            --resource-group rg-testing-azd-pipelines \
+            --yes
