@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="src/AzdPipelinesAzureInfra.ApiService/AzdPipelinesAzureInfra.ApiService.csproj" />
   <Project Path="src/AzdPipelinesAzureInfra.AppHost/AzdPipelinesAzureInfra.AppHost.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.Persistence/AzdPipelinesAzureInfra.Persistence.csproj" Id="1ab59ebc-74a9-471a-8cc3-c50f5a4497f8" />
   <Project Path="src/AzdPipelinesAzureInfra.ServiceDefaults/AzdPipelinesAzureInfra.ServiceDefaults.csproj" />
   <Project Path="src/AzdPipelinesAzureInfra.Web/AzdPipelinesAzureInfra.Web.csproj" />
 </Solution>

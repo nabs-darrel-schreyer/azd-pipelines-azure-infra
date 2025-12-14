@@ -78,9 +78,105 @@ Provide the environment name when prompted. I used `testing-azd-pipelines`. See 
 
 > NOTE: At this point you can deploy the infrastructure directly to Azure from your local machine. This is great for ephemeral environment testing. However, in this example I want to deploy from GitHub Actions using Azure Developer CLI.
 
-# Step 3: Aspire Pipeline Generation
+# Step 3: Azd Pipeline Generation and Deployment
 
 Now that we have the Aspire project set up to use ACA, we can generate the pipeline files.
 
-1. Run the following command to generate the pipeline files: `aspire pipeline config`.
+1. Run the following command to generate the pipeline files: `azd pipeline config`. I selected `GiHub` as my pipeline provider.
+
+Here is the full output of the command:
+
+```text
+? Select a provider: GitHub
+
+Configure your GitHub pipeline
+
+  (✓) Done: Upgrading Bicep
+? Select an Azure Subscription to use:  1. NabsFoundations (XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX)
+? Enter a value for the 'location' infrastructure parameter:  5. (Asia Pacific) Australia East (australiaeast)
+
+The default azure-dev.yml file, which contains a basic workflow to help you get started, is missing from your project.
+
+? Would you like to add it now? Yes
+
+The azure-dev.yml file has been created at C:\Dev\nabs-darrel-schreyer\azd-pipelines-azure-infra\.github\workflows\azure-dev.yml. You can use it as-is or modify it to suit your needs.
+? This command requires you to be logged into GitHub. Log in using the GitHub CLI? Yes
+? What is your preferred protocol for Git operations on this host? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Login with a web browser
+
+! First copy your one-time code: XXXX-XXXX
+Press Enter to open https://github.com/login/device in your browser...
+✓ Authentication complete.
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+? This command requires you to be logged into GitHub. Log in using the GitHub CLI? Yes
+? What is your preferred protocol for Git operations on this host? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Login with a web browser
+
+! First copy your one-time code: XXXX-XXXX
+Press Enter to open https://github.com/login/device in your browser...
+✓ Authentication complete.
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+✓ Logged in as nabs-darrel-schreyer
+! You were already logged in to this account
+
+  (✓) Done: Checking current directory for Git repository
+? Select how to authenticate the pipeline to Azure Federated Service Principal (SP + OIDC)
+  (✓) Done: Creating service principal az-dev-XX-XX-XXXX-XX-XX-XX (XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX)
+  (✓) Done: Federated identity credential for GitHub: subject repo:nabs-darrel-schreyer/azd-pipelines-azure-infra:pull_request
+  (✓) Done: Federated identity credential for GitHub: subject repo:nabs-darrel-schreyer/azd-pipelines-azure-infra:ref:refs/heads/main
+  (✓) Done: Setting AZURE_ENV_NAME repo variable
+  (✓) Done: Setting AZURE_LOCATION repo variable
+  (✓) Done: Setting AZURE_SUBSCRIPTION_ID repo variable
+  (✓) Done: Setting AZURE_TENANT_ID repo variable
+  (✓) Done: Setting AZURE_CLIENT_ID repo variable
+  (✓) Done: Assigning read access role for Key Vault
+  (✓) Done: Unchanged AZURE_ENV_NAME repo variable
+  (✓) Done: Unchanged AZURE_LOCATION repo variable
+  (✓) Done: Setting up project's variables to be used in the pipeline
+
+  GitHub Action secrets are now configured. You can view GitHub action secrets that were created at this link:
+  https://github.com/nabs-darrel-schreyer/azd-pipelines-azure-infra/settings/secrets/actions
+? Would you like to commit and push your local changes to start the configured CI pipeline? Yes
+? Would you like to commit and push your local changes to start the configured CI pipeline? (Y/n)
+  (✓) Done: Pushing changes
+  (✓) Done: Queuing pipeline
+
+SUCCESS: Your GitHub pipeline has been configured!
+Link to view your new repo: https://github.com/nabs-darrel-schreyer/azd-pipelines-azure-infra
+Link to view your pipeline status: https://github.com/nabs-darrel-schreyer/azd-pipelines-azure-infra/actions
+```
+
+2. After the GitHub Action completed successfully, I was able to see the deployed resources in the Azure Portal. Here is a screenshot of the deployed resources visualisation: ![Deployed Resourcesresources](./docs/images/step-03-pipeline-generation-and-deployment.png)
+
+# Step 4: Add an Azure SQL Database to Aspire
+
+The next step is to add a Azure SQL Database to the Aspire project.
+
+1. Run the following command to add the Azure SQL Database integration: `aspire add azure-sql`.
+
+```text
+✔  The package Aspire.Hosting.Azure.Sql::13.0.2 was added successfully.
+```
+
+2. Update the `AppHost.cs` file to include the Azure SQL Database service:
+
+```csharp
+var sqlServer = builder
+    .AddAzureSqlServer("sql-server");
+
+var testDb = sqlServer
+    .AddDatabase("test-db");
+
+var apiService = builder.AddProject<Projects.AzdPipelinesAzureInfra_ApiService>("apiservice")
+    .WithHttpHealthCheck("/health")
+    .WithReference(testDb).WaitFor(testDb);
+```
+
+# Step 5: Add Entity Framework DbContext Project.
+
+
 

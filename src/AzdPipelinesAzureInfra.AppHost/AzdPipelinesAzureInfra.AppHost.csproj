@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="13.0.2" />
+    <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="13.0.2" />
   </ItemGroup>
 
 </Project>
