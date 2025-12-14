@@ -150,7 +150,7 @@ Link to view your new repo: https://github.com/nabs-darrel-schreyer/azd-pipeline
 Link to view your pipeline status: https://github.com/nabs-darrel-schreyer/azd-pipelines-azure-infra/actions
 ```
 
-2. After the GitHub Action completed successfully, I was able to see the deployed resources in the Azure Portal. Here is a screenshot of the deployed resources visualisation: ![Deployed Resourcesresources](./docs/images/step-03-pipeline-generation-and-deployment.png)
+2. After the GitHub Action completed successfully, I was able to see the deployed resources in the Azure Portal. Here is a screenshot of the deployed resources visualisation: ![Deployed Resources](./docs/images/step-03-pipeline-generation-and-deployment.png)
 
 # Step 4: Add an Azure SQL Database to Aspire
 
@@ -176,7 +176,14 @@ var apiService = builder.AddProject<Projects.AzdPipelinesAzureInfra_ApiService>(
     .WithReference(testDb).WaitFor(testDb);
 ```
 
-# Step 5: Add Entity Framework DbContext Project.
+After these changes have been committed, the pipeline has been triggered, and the onfrastructure deployed, the updated resources visualised looks like this:
 
+![Deployed Resources](./docs/images/step-04-sql-server-deployment.png)
+
+As you can see no connection strings or secrets stored.
+
+# Step 5: Add Entity Framework DbContext Project
+
+# Step 6: Add PowerShell Script integration
 
 

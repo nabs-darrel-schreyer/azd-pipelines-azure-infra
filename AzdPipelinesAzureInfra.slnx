@@ -1,7 +1,9 @@
 <Solution>
   <Project Path="src/AzdPipelinesAzureInfra.ApiService/AzdPipelinesAzureInfra.ApiService.csproj" />
   <Project Path="src/AzdPipelinesAzureInfra.AppHost/AzdPipelinesAzureInfra.AppHost.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.Dtos/AzdPipelinesAzureInfra.Dtos.csproj" Id="c03f9e6b-c834-473d-972a-ef0abdb4d4cb" />
   <Project Path="src/AzdPipelinesAzureInfra.Persistence/AzdPipelinesAzureInfra.Persistence.csproj" Id="1ab59ebc-74a9-471a-8cc3-c50f5a4497f8" />
   <Project Path="src/AzdPipelinesAzureInfra.ServiceDefaults/AzdPipelinesAzureInfra.ServiceDefaults.csproj" />
+  <Project Path="src/AzdPipelinesAzureInfra.SqlMigrations/AzdPipelinesAzureInfra.SqlMigrations.csproj" Id="9d0b3d94-b720-4480-9b17-c1cf46b41817" />
   <Project Path="src/AzdPipelinesAzureInfra.Web/AzdPipelinesAzureInfra.Web.csproj" />
 </Solution>

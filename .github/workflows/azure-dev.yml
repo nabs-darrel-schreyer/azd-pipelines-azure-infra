@@ -36,6 +36,9 @@ jobs:
             9.x
             10.x
 
+      - name: Install Entity Framework Core tools
+        run: dotnet tool install --global dotnet-ef
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
@@ -50,4 +53,16 @@ jobs:
 
       - name: Deploy Application
         run: azd deploy --no-prompt
-        
+
+      - name: Run Database Migrations
+        run: |
+          # Get the connection string from Azure
+          $connectionString = azd env get-value "ConnectionStrings__test-db"
+          
+          # Run EF migrations
+          dotnet ef database update `
+            --project src/AzdPipelinesAzureInfra.Persistence/AzdPipelinesAzureInfra.Persistence.csproj `
+            --startup-project src/AzdPipelinesAzureInfra.ApiService/AzdPipelinesAzureInfra.ApiService.csproj `
+            --connection "$connectionString" `
+            --verbose
+        shell: pwsh

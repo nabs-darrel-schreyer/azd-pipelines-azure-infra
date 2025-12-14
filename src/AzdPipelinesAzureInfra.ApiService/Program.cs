@@ -1,4 +1,7 @@
 using AzdPipelinesAzureInfra.ApiService.Persistence;
+using AzdPipelinesAzureInfra.Dtos;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +39,15 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
+{
+    var people = await dbContext.People
+        .Select(x => new Person(x.Id, x.Username, x.FirstName, x.LastName))
+        .ToListAsync();
+    return people;
+})
+.WithName("GetPeople");
+
 app.MapDefaultEndpoints();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

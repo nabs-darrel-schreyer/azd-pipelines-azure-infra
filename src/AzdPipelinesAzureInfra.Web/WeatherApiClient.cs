@@ -1,3 +1,5 @@
+using AzdPipelinesAzureInfra.Dtos;
+
 namespace AzdPipelinesAzureInfra.Web;
 
 public class WeatherApiClient(HttpClient httpClient)
@@ -23,7 +25,26 @@ public class WeatherApiClient(HttpClient httpClient)
     }
 }
 
-public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public class PeopleApiClient(HttpClient httpClient)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public async Task<Person[]> GetPeopleAsync(int maxItems = 10, CancellationToken cancellationToken = default)
+    {
+        List<Person>? people = null;
+
+        await foreach (var person in httpClient.GetFromJsonAsAsyncEnumerable<Person>("/people", cancellationToken))
+        {
+            if (people?.Count >= maxItems)
+            {
+                break;
+            }
+            if (person is not null)
+            {
+                people ??= [];
+                people.Add(person);
+            }
+        }
+
+        return people?.ToArray() ?? [];
+    }
 }
+

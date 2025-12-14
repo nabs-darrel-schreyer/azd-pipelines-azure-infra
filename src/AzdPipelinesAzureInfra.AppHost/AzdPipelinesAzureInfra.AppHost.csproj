@@ -10,12 +10,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzdPipelinesAzureInfra.ApiService\AzdPipelinesAzureInfra.ApiService.csproj" />
+    <ProjectReference Include="..\AzdPipelinesAzureInfra.SqlMigrations\AzdPipelinesAzureInfra.SqlMigrations.csproj" />
     <ProjectReference Include="..\AzdPipelinesAzureInfra.Web\AzdPipelinesAzureInfra.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="13.0.2" />
     <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="13.0.2" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.PowerShell" Version="13.0.1-beta.468" />
   </ItemGroup>
 
 </Project>
