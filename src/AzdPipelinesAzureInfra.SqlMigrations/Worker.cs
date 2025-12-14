@@ -51,24 +51,18 @@ public class Worker(
     private static async Task SeedDataAsync(
         TestDbContext dbContext, CancellationToken cancellationToken)
     {
-        PersonEntity[] people = [
-            new() {
-                Username = "testuser1",
-                FirstName = "Test1",
-                LastName = "User1"
-            },
-            new() {
-                Username = "testuser2",
-                FirstName = "Test2",
-                LastName = "User2"
-            },
-            new() {
-                Username = "testuser3",
-                FirstName = "Test3",
-                LastName = "User3"
-            }
-        ];
-        
+        var people = new List<PersonEntity>();
+        for (int i = 0; i < 3; i++)
+        {
+            var id = Guid.NewGuid();
+            people.Add(new PersonEntity {
+                Id = id,
+                Username = $"user{id}",
+                FirstName = $"FirstName{id}",
+                LastName = $"LastName{id}"
+            });
+        }
+
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
