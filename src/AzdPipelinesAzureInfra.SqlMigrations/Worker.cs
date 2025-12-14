@@ -73,13 +73,13 @@ public class Worker(
         }
 
         // I expect this one is added every after a deployment.
-        var id = Guid.NewGuid();
+        var newId = Guid.NewGuid();
         people.Add(new PersonEntity
         {
-            Id = id,
-            Username = $"user{id}",
-            FirstName = $"FirstName{id}",
-            LastName = $"LastName{id}",
+            Id = newId,
+            Username = $"user{newId}",
+            FirstName = $"FirstName{newId}",
+            LastName = $"LastName{newId}",
             YearOfBirth = rnd.Next(1885, 2025)
         });
 
