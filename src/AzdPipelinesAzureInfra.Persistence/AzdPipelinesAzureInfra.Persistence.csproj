@@ -13,6 +13,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Nabs.Launchpad.Core.Persistence" Version="10.0.193" />
 	</ItemGroup>
 	
 </Project>

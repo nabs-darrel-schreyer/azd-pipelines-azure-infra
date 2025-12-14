@@ -1,8 +1,5 @@
 ﻿using AzdPipelinesAzureInfra.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
-using OpenTelemetry.Trace;
 using System.Diagnostics;
 
 namespace AzdPipelinesAzureInfra.SqlMigrations;
@@ -52,7 +49,7 @@ public class Worker(
         TestDbContext dbContext, CancellationToken cancellationToken)
     {
         var rnd = new Random();
-        
+
         // I expect that these items are added only once
         Guid[] ids = [
             new Guid("549b8034-909d-4f25-abed-48a9fdb24276"),
@@ -83,14 +80,23 @@ public class Worker(
             YearOfBirth = rnd.Next(1885, 2025)
         });
 
+        var existingPeople = await dbContext.People
+            .AsNoTracking()
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync(cancellationToken);
+
+        var peopleToAdd = people
+            .Where(p => !existingPeople.Any(ep => ep.Id == p.Id))
+            .ToList();
+
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
             await using var transaction = await dbContext.Database
                 .BeginTransactionAsync(cancellationToken);
 
-            await dbContext.People.AddRangeAsync(people, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            dbContext.People.AddRange(peopleToAdd);
+            var rowsAdded = await dbContext.SaveChangesAsync(cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
         });

@@ -7,7 +7,12 @@ var aca = builder
 
 var sqlServer = builder
     .AddAzureSqlServer("sql-server")
-    .RunAsContainer();
+    .RunAsContainer(config =>
+    {
+        config.WithDataVolume("testSqlDbDataVolume");
+        config.WithContainerName("test-sql-db");
+        config.WithLifetime(ContainerLifetime.Persistent);
+    });
 
 var testDb = sqlServer
     .AddDatabase("test-db", "TestSqlDb");
