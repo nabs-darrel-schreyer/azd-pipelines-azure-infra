@@ -78,3 +78,9 @@ Provide the environment name when prompted. I used `testing-azd-pipelines`. See 
 
 > NOTE: At this point you can deploy the infrastructure directly to Azure from your local machine. This is great for ephemeral environment testing. However, in this example I want to deploy from GitHub Actions using Azure Developer CLI.
 
+# Step 3: Aspire Pipeline Generation
+
+Now that we have the Aspire project set up to use ACA, we can generate the pipeline files.
+
+1. Run the following command to generate the pipeline files: `aspire pipeline config`.
+
