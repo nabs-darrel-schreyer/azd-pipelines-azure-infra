@@ -77,7 +77,7 @@ public class Worker(
             Username = $"user{newId}",
             FirstName = $"FirstName{newId}",
             LastName = $"LastName{newId}",
-            YearOfBirth = rnd.Next(1885, 2025)
+            YearOfBirth = rnd.Next(1985, 2025)
         });
 
         var existingPeople = await dbContext.People

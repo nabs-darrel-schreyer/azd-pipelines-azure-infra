@@ -184,6 +184,25 @@ As you can see no connection strings or secrets stored.
 
 # Step 5: Add Entity Framework DbContext Project
 
-# Step 6: Add PowerShell Script integration
+In order to run the Entity Framework migrations, I prefer to keep the persistence logic separate, so I added a new project to the solution that contains the `DbContext` with a `.Persistence` suffix.
+
+This also allows me to use my `NabsMigration` dotnet tool to analise and process migrations.
+
+Here is a screenshot that show how the tool provides visualisations of the project `DbContext` structure and state.
+
+![NabsMigration Tool](./docs/images/step-05-sql-migrations.png)
+
+# Step 6: Remove the SqlMigrations Container
+
+It turns out that the `SqlMigrations` container is not needed after running the deployment. Also, in my experimentation, I found that even through it only runs one and the process shuts down, I ended up paying for it in the areas of `Standard vCPU Active Usage` and `Standard Memory Active Usage`.
+
+I have manually added the following to the `azure-dev.yml` file in order to remove the `SqlMigrations` container after the deployment is complete.
+
+```yaml
+    - name: Remove SqlMigrations Container
+      run: |
+        az container delete --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name sqlmigrations --yes
+```
+
 
 
