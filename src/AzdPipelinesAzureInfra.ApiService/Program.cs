@@ -9,6 +9,11 @@ builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
+builder.AddAzureAppConfiguration("appconfig", configureOptions: options =>
+{
+    options.Select("*", "AzdPipelines");
+});
+
 builder.AddSqlServerDbContext<TestDbContext>(connectionName: "test-db");
 
 var app = builder.Build();
@@ -47,6 +52,13 @@ app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
     return people;
 })
 .WithName("GetPeople");
+
+app.MapGet("/config/{key}", ([FromServices]IConfiguration configuration, string key) =>
+{
+    var configValue = configuration[key];
+    return configValue;
+
+}).WithName("GetOptions");
 
 app.MapDefaultEndpoints();
 

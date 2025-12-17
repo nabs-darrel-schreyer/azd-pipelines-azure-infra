@@ -11,7 +11,7 @@
 		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
 			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Nabs.Launchpad.Core.Persistence" Version="10.0.193" />
 	</ItemGroup>
