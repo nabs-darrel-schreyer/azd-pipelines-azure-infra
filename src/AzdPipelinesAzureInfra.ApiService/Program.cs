@@ -57,6 +57,11 @@ app.MapGet("/config/{key}", ([FromServices]IConfiguration configuration, string 
 {
     List<string> validKeys = [ "TestKey" ];
 
+    if(!validKeys.Contains(key))
+    {
+        return $"Invalid configuration key '{key}'";
+    }
+
     try
     {
         var configValue = configuration[key];
@@ -64,7 +69,7 @@ app.MapGet("/config/{key}", ([FromServices]IConfiguration configuration, string 
     }
     catch (Exception ex)
     {
-        return $"Error retrieving configuration for key '{key}': {ex.Message}";
+        return $"Error retrieving configuration for key '{key}'";
     }
 
 })
