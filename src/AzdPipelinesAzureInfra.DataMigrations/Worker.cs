@@ -44,7 +44,8 @@ public class Worker(
         var defaultKeyValues = new Dictionary<string, string>
         {
             { "TestKey", "<<default-value-TestKey>>" },
-            { "NewKey", "<<default-value-NewKey>>" }
+            { "NewKey", "<<default-value-NewKey>>" },
+            { "AnotherKey", "<<default-value-AnotherKey>>" }
         };
 
         const string targetLabel = "AzdPipelines";

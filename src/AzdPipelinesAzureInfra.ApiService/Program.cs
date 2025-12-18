@@ -55,7 +55,7 @@ app.MapGet("/people", async ([FromServices] TestDbContext dbContext) =>
 
 app.MapGet("/config/{key}", ([FromServices] IConfiguration configuration, string key) =>
 {
-    List<string> allowedKeys = ["TestKey"];
+    List<string> allowedKeys = ["TestKey", "NewKey", "AnotherKey"];
     if (!allowedKeys.Contains(key))
     {
         return $"Invalid configuration key request for: '{key}'";
