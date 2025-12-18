@@ -1,5 +1,5 @@
 using Azure.Provisioning.AppConfiguration;
-using CommunityToolkit.Aspire.Hosting.PowerShell;
+using Azure.Provisioning.Sql;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -26,6 +26,13 @@ var appconfig = builder
 
 var sqlServer = builder
     .AddAzureSqlServer("sql-server")
+    .ConfigureInfrastructure(sqlConfig =>
+    {
+        var azureResources = sqlConfig.GetProvisionableResources();
+        var azureDb = azureResources.OfType<SqlDatabase>().Single();
+        azureDb.Sku = new SqlSku() { Name = "Basic", Tier = "Basic", Capacity = 5 };
+        azureDb.UseFreeLimit = false;
+    })
     .RunAsContainer(config =>
     {
         config.WithDataVolume("localSqlDbDataVolume");

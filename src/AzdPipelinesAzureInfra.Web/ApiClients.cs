@@ -2,7 +2,7 @@ using AzdPipelinesAzureInfra.Dtos;
 
 namespace AzdPipelinesAzureInfra.Web;
 
-public class WeatherApiClient(HttpClient httpClient)
+public class ApiClients(HttpClient httpClient)
 {
     public async Task<WeatherForecast[]> GetWeatherAsync(int maxItems = 10, CancellationToken cancellationToken = default)
     {
@@ -48,3 +48,12 @@ public class PeopleApiClient(HttpClient httpClient)
     }
 }
 
+public class ConfigApiClient(HttpClient httpClient)
+{
+    public async Task<string> GetConfigAsync(string key, CancellationToken cancellationToken = default)
+    {
+        var keyValue = await httpClient.GetStringAsync($"/config/{key}", cancellationToken);
+
+        return keyValue ?? $"No value found for {key}";
+    }
+}

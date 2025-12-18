@@ -1,0 +1,22 @@
+﻿@page "/config"
+@rendermode InteractiveServer
+@inject ConfigApiClient ConfigApiClient
+
+<PageTitle>Config</PageTitle>
+
+<h1>Config</h1>
+
+<input type="text" @bind-value="@key" />
+<button class="btn btn-primary" @onclick="GetValue">Click me</button>
+<hr />
+<p role="status">Key Value: @keyValue</p>
+
+@code {
+    private string key = string.Empty;
+    private string keyValue = string.Empty;
+
+    private async void GetValue()
+    {
+        keyValue = await ConfigApiClient.GetConfigAsync(key);
+    }
+}

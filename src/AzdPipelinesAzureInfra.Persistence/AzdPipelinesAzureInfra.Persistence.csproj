@@ -8,12 +8,12 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.0.2" />
+		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.1.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Nabs.Launchpad.Core.Persistence" Version="10.0.193" />
+		<PackageReference Include="Nabs.Launchpad.Core.Persistence" Version="10.0.202" />
 	</ItemGroup>
 	
 </Project>

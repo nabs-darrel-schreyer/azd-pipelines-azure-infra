@@ -55,10 +55,20 @@ app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
 
 app.MapGet("/config/{key}", ([FromServices]IConfiguration configuration, string key) =>
 {
-    var configValue = configuration[key];
-    return configValue;
+    List<string> validKeys = [ "TestKey" ];
 
-}).WithName("GetOptions");
+    try
+    {
+        var configValue = configuration[key];
+        return configValue;
+    }
+    catch (Exception ex)
+    {
+        return $"Error retrieving configuration for key '{key}': {ex.Message}";
+    }
+
+})
+.WithName("GetOptions");
 
 app.MapDefaultEndpoints();
 
