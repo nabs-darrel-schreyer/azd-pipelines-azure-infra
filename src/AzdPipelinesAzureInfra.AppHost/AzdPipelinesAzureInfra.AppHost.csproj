@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AzdPipelinesAzureInfra.ApiService\AzdPipelinesAzureInfra.ApiService.csproj" />
-		<ProjectReference Include="..\AzdPipelinesAzureInfra.SqlMigrations\AzdPipelinesAzureInfra.SqlMigrations.csproj" />
+		<ProjectReference Include="..\AzdPipelinesAzureInfra.DataMigrations\AzdPipelinesAzureInfra.DataMigrations.csproj" />
 		<ProjectReference Include="..\AzdPipelinesAzureInfra.Web\AzdPipelinesAzureInfra.Web.csproj" />
 	</ItemGroup>
 

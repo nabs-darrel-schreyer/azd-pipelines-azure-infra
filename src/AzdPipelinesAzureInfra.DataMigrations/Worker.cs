@@ -1,11 +1,13 @@
 ﻿using AzdPipelinesAzureInfra.Persistence;
+using Azure.Data.AppConfiguration;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
-namespace AzdPipelinesAzureInfra.SqlMigrations;
+namespace AzdPipelinesAzureInfra.DataMigrations;
 
 public class Worker(
     IServiceProvider serviceProvider,
+    IConfgurationClient configurationClient,
     IHostApplicationLifetime hostApplicationLifetime) : BackgroundService
 {
     public const string ActivitySourceName = "Migrations";
@@ -15,15 +17,17 @@ public class Worker(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var activity = _activitySource.StartActivity(
-            "Migrating database", ActivityKind.Client);
+            "Running Data Migrations", ActivityKind.Client);
 
         try
         {
+            await RunAppConfigurationSeedDataAsync(stoppingToken);
+
             using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<TestDbContext>();
 
-            await RunMigrationAsync(dbContext, stoppingToken);
-            await SeedDataAsync(dbContext, stoppingToken);
+            await RunSqlMigrationAsync(dbContext, stoppingToken);
+            await RunSqlSeedDataAsync(dbContext, stoppingToken);
         }
         catch (Exception ex)
         {
@@ -34,7 +38,44 @@ public class Worker(
         hostApplicationLifetime.StopApplication();
     }
 
-    private static async Task RunMigrationAsync(
+    private async Task RunAppConfigurationSeedDataAsync(
+        CancellationToken cancellationToken)
+    {
+        var defaultKeyValues = new Dictionary<string, string>
+        {
+            { "TestKey", "<<default-value-TestKey>>" },
+            { "NewKey", "<<default-value-NewKey>>" }
+        };
+
+        const string targetLabel = "AzdPipelines";
+
+        foreach (var kvp in defaultKeyValues)
+        {
+            var selector = new SettingSelector
+            {
+                KeyFilter = kvp.Key,
+                LabelFilter = targetLabel
+            };
+            try
+            {
+                var existing = await configurationClient
+                    .GetConfigurationSettingsAsync(selector, cancellationToken)
+                    .ToListAsync(cancellationToken);
+                if (!existing.Any())
+                {
+                    var newConfig = new ConfigurationSetting(kvp.Key, kvp.Value, targetLabel);
+                    await configurationClient.SetConfigurationSettingAsync(newConfig, cancellationToken: cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    $"Error checking existing configuration for key '{kvp.Key}'", ex);
+            }
+        }
+    }
+
+    private static async Task RunSqlMigrationAsync(
         TestDbContext dbContext, CancellationToken cancellationToken)
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
@@ -45,7 +86,7 @@ public class Worker(
         });
     }
 
-    private static async Task SeedDataAsync(
+    private static async Task RunSqlSeedDataAsync(
         TestDbContext dbContext, CancellationToken cancellationToken)
     {
         var rnd = new Random();

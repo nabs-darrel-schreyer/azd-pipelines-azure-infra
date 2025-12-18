@@ -44,7 +44,7 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
+app.MapGet("/people", async ([FromServices] TestDbContext dbContext) =>
 {
     var people = await dbContext.People
         .Select(x => new Person(x.Id, x.Username, x.FirstName, x.LastName, x.YearOfBirth))
@@ -53,24 +53,22 @@ app.MapGet("/people", async ([FromServices]TestDbContext dbContext) =>
 })
 .WithName("GetPeople");
 
-app.MapGet("/config/{key}", ([FromServices]IConfiguration configuration, string key) =>
+app.MapGet("/config/{key}", ([FromServices] IConfiguration configuration, string key) =>
 {
-    List<string> validKeys = [ "TestKey" ];
-
-    if(!validKeys.Contains(key))
+    List<string> allowedKeys = ["TestKey"];
+    if (!allowedKeys.Contains(key))
     {
-        return $"Invalid configuration key '{key}'";
+        return $"Invalid configuration key request for: '{key}'";
     }
 
-    try
+
+    if (!configuration.AsEnumerable().Any(kvp => kvp.Key == key))
     {
-        var configValue = configuration[key];
-        return configValue;
+        return $"Configuration key '{key}' not found";
     }
-    catch (Exception ex)
-    {
-        return $"Error retrieving configuration for key '{key}'";
-    }
+
+    var configValue = configuration[key];
+    return configValue;
 
 })
 .WithName("GetOptions");
