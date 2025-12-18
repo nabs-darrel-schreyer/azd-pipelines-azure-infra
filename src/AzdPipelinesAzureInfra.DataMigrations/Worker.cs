@@ -1,6 +1,7 @@
 ﻿using AzdPipelinesAzureInfra.Persistence;
 using Azure.Data.AppConfiguration;
 using Microsoft.EntityFrameworkCore;
+using Nabs.Launchpad.Core.SeedData;
 using System.Diagnostics;
 
 namespace AzdPipelinesAzureInfra.DataMigrations;
@@ -43,9 +44,7 @@ public class Worker(
     {
         var defaultKeyValues = new Dictionary<string, string>
         {
-            { "TestKey", "<<default-value-TestKey>>" },
-            { "NewKey", "<<default-value-NewKey>>" },
-            { "AnotherKey", "<<default-value-AnotherKey>>" }
+            { "TestKey", "<<default-value-TestKey>>" }
         };
 
         const string targetLabel = "AzdPipelines";

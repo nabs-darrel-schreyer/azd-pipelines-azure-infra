@@ -15,6 +15,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Nabs.Launchpad.Core.SeedData" Version="10.0.203" />
 	</ItemGroup>
 
 	<ItemGroup>
