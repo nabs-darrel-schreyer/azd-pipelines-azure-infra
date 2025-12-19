@@ -8,9 +8,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Data.AppConfiguration" Version="1.7.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
-		<PackageReference Include="Aspire.Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="13.1.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
